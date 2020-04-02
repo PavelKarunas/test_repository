@@ -1,0 +1,22 @@
+# tasks file for nginx
+
+- name: Install nginx
+  become: yes
+  package: 
+    name: nginx=1.14.0-0ubuntu1.7
+  become: yes
+
+- name: Start Nginx
+  become: yes
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Copy nginx-backend config
+  become: yes
+  template:
+    src: backend.j2
+    dest: /etc/nginx/conf.d/backend.conf
+  notify:
+    - Restart Nginx 

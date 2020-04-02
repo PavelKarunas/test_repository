@@ -1,0 +1,9 @@
+
+- name: Jenkins
+  hosts: localhost
+  gather_facts: yes        
+  roles:
+  - role: base   
+  - role: java
+  - role: jenkins
+  - role: nginx
