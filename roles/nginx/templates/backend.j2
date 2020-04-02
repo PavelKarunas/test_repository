@@ -1,6 +1,6 @@
 server {
       listen 80;
-      server_name pkarunas.playpit.by;
+      server_name jenkins.pkarunas.playpit.by;
       location / {
           proxy_pass http://{{ hostvars['localhost'].ansible_default_ipv4.address }}:8080/;
       }
