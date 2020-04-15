@@ -24,9 +24,9 @@ spec:
         app: pkarunas-tomcat
     spec:
       containers:
-        - name: pkarunas-tomcat
-          image: replace_string
-          ports:
+      - name: pkarunas-tomcat
+        image: replace_string
+        ports:
         - containerPort: 8080
         readinessProbe:
           httpGet:
