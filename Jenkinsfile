@@ -1,4 +1,4 @@
-node {
+node ('master') {
     
     stage('Preparation (Checking out)'){
         checkout scm
