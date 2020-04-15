@@ -3,6 +3,15 @@ kind: Namespace
 metadata:
   name: pkarunas
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: regcred
+  namespace: pkarunas
+data:
+  .dockerconfigjson: ewoJImF1dGhzIjogewoJCSIxMC4xMi4xMC4xODo4MTIzIjogewoJCQkiYXV0aCI6ICJTbVZ1YTJsdWN6bzRNalJoZEcweU1RPT0iCgkJfSwKCQkiMTAuMTIuMTEuMTg6ODEyMyI6IHsKCQkJImF1dGgiOiAiU21WdWEybHVjem80TWpSaGRHMHlNUT09IgoJCX0sCgkJIjEwLjEyLjEyLjE1OjgxMjQiOiB7CgkJCSJhdXRoIjogIlNtVnVhMmx1Y3pvNE1qUmhkRzB5TVE9PSIKCQl9LAoJCSIxMC4xMi4xMi4xODo4MTI0IjogewoJCQkiYXV0aCI6ICJTbVZ1YTJsdWN6bzRNalJoZEcweU1RPT0iCgkJfSwKCQkiMTAuMTIuNy4xMzo4MTIzIjogewoJCQkiYXV0aCI6ICJZV1J0YVc0Nk9ESnRjV1EyTkhFPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
+type: kubernetes.io/dockerconfigjson
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,3 +50,40 @@ spec:
           timeoutSeconds: 5
       imagePullSecrets:
         - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: tomcat
+  name: pkarunas-svc
+  namespace: pkarunas
+spec:
+  ports:
+  - port: 80
+    nodePort: 30170
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: pkarunas-tomcat
+  type: NodePort
+status:
+  loadBalancer: {}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: pkarunas-ingress
+  namespace: pkarunas
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /helloworld-ws/
+spec:
+  rules:
+  - host: helloworld-app.k8s.pkarunas.playpit.by
+    http:
+      paths: 
+      - path: /
+        backend:
+          serviceName: pkarunas-svc
+          servicePort: 80
