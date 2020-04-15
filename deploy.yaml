@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pkarunas
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pkarunas-tomcat
+  namespace: pkarunas
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: pkarunas-tomcat
+  template:
+    metadata:
+      labels:
+        app: pkarunas-tomcat
+    spec:
+      containers:
+        - name: pkarunas-tomcat
+          image: replace_string
+          ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /helloworld-ws/
+            port: 8080
+            httpHeaders:
+            - name: Server
+              value: openresty/1.15.8.2
+          initialDelaySeconds: 24
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 5
+      imagePullSecrets:
+        - name: regcred
