@@ -1,9 +1,3 @@
-def notifyFailed(String message) {
-  mail to: 'kps4k@yandex.ru',
-      subject: "Status of pipeline: ${currentBuild.fullDisplayName}",
-      body: "$message: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}"
-}
-
 node ('master') {
   
 try {
@@ -16,7 +10,7 @@ try {
 catch(exception)
     {
         String result = 'FAILURE at Preparation (Checking out) stage'
-        notifyFailed(result)
+        failreport(result)
         throw e
     }
 
@@ -34,7 +28,7 @@ try {
 catch(exception)
     {
         String result = 'FAILURE at Building stage'
-        notifyFailed(result)
+        failreport(result)
         throw e
     }
 
@@ -50,7 +44,7 @@ try {
 catch(exception)
     {
         String result = 'FAILURE at Sonar scan stage'
-        notifyFailed(result)
+        failreport(result)
         throw e
     }
 
@@ -75,7 +69,7 @@ try {
 catch(exception)
     {
         String result = 'FAILURE at Testing stage'
-        notifyFailed(result)
+        failreport(result)
         throw e
     }
 
@@ -89,7 +83,7 @@ try {
 catch(exception)
     {
         String result = 'FAILURE at Triggering job and fetching artefact after finishing stage'
-        notifyFailed(result)
+        failreport(result)
         throw e
     }
 
@@ -105,7 +99,7 @@ try {
 catch(exception)
     {
         String result = 'FAILURE at Packaging and Publishing results stage'
-        notifyFailed(result)
+        failreport(result)
         throw e
     }
 
@@ -142,7 +136,7 @@ try {
 catch(exception)
     {
         String result = 'FAILURE at Creating Docker Image stage'
-        notifyFailed(result)
+        failreport(result)
         throw e
     }
 
@@ -171,13 +165,12 @@ try {
 catch(exception)
     {
         String result = 'FAILURE at Deployment (rolling update, zero downtime) stage'
-        notifyFailed(result)
+        failreport(result)
         throw e
     }
 
     stage('Sending email') {
-        mail to: 'kps4k@yandex.ru',
-            subject: "Status of pipeline: ${currentBuild.fullDisplayName}",
-            body: "Success: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}"
+        String result = 'Success'
+        failreport(result)
     }
 }
