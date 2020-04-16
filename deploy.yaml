@@ -37,16 +37,21 @@ spec:
         image: replace_string
         ports:
         - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /helloworld-ws/
+            port: 8080
+          initialDelaySeconds: 30
+          failureThreshold: 2
         readinessProbe:
           httpGet:
             path: /helloworld-ws/
             port: 8080
             httpHeaders:
             - name: Server
-              value: openresty/1.15.8.2
-          initialDelaySeconds: 24
-          periodSeconds: 3
-          successThreshold: 1
+              value: DunnoWhy
+          initialDelaySeconds: 15
+          periodSeconds: 5
           timeoutSeconds: 5
       imagePullSecrets:
         - name: regcred
