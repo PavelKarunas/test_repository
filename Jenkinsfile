@@ -172,6 +172,6 @@ catch(exception)
     stage('Sending email') {
         mail to: 'kps4k@yandex.ru',
             subject: "Status of pipeline: ${currentBuild.fullDisplayName}",
-            body: "${currentBuild.result}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}"
+            body: "Success: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}"
     }
 }
