@@ -159,6 +159,12 @@ try {
         IP=$(kubectl get po -n nexus -o wide | grep nexus-deploy | awk '{ print $6}'):8124;
         sed -i "s|replace_string|$IP/helloworld-pkarunas:${BUILD_NUMBER}|" deploy.yaml
         kubectl apply -f deploy.yaml
+        sleep 120
+        if (( $(curl -I http://helloworld-app.k8s.pkarunas.playpit.by | grep 200) == "")); then
+        kubectl rollout undo deployment/pkarunas-tomcat -n pkarunas
+        else
+        echo "Sanity check passed"
+        fi
         '''
     }
 }
